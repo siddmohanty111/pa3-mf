@@ -11,7 +11,14 @@ def argmax_action(d: dict[Any,float]) -> Any:
     Returns:
         Any: a key
     """
-    pass
+
+    max_value = max(d.values())    
+
+    # list of keys with the maximum value
+    keys = [key for key, value in d.items() if value == max_value]
+
+    # return a random key among the keys with the maximum value
+    return random.choice(keys)
 
 class ValueRLAgent():
     def __init__(self, env: gym.Env, gamma : float = 0.98, eps: float = 0.2, alpha: float = 0.02, total_epi: int = 5_000) -> None:
@@ -43,7 +50,15 @@ class ValueRLAgent():
         Returns:
             dict[int,dict[int,float]]: q table (q[s][a] -> q-value)
         """
-        pass
+
+        q_table = dict()
+
+        for key in range(n_states):
+            q_table[key] = dict()
+            for a in range(n_actions):
+                q_table[key][a] = init_val
+
+        return q_table
 
     def eps_greedy(self, state: int, exploration: bool = True) -> int:
         """epsilon greedy algorithm to return an action
@@ -55,7 +70,14 @@ class ValueRLAgent():
         Returns:
             int: action
         """
-        pass
+        
+        if exploration and random.random() < self.eps:
+            # explore
+            return self.env.action_space.sample()
+        else:
+            # exploit
+            return argmax_action(self.q[state])
+
 
     def choose_action(self, ss: int) -> int:
         """a helper function to specify a exploration policy
